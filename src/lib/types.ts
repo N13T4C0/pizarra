@@ -29,3 +29,15 @@ export interface Note {
   /** Pendiente que se decidió no pasar; ya no se vuelve a ofrecer. */
   dismissed?: boolean
 }
+
+export interface Habit {
+  id: string
+  name: string
+  ink: Ink
+  createdAt: number
+  /** Días cumplidos, como claves de día (2026-10-28). */
+  days: string[]
+}
+
+/** Qué hay en la pizarra: las notas de un periodo, los hábitos o el resumen. */
+export type View = 'notes' | 'habits' | 'stats'

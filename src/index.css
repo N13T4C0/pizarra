@@ -150,6 +150,15 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .icon {
   flex: none;
   display: block;
@@ -239,6 +248,14 @@ p {
 
 .tabs button[aria-current='page']::after {
   transform: scaleX(1);
+}
+
+.tabs-gap {
+  width: 1px;
+  height: 20px;
+  margin: 0 8px;
+  align-self: center;
+  background: var(--wall-line);
 }
 
 .count {
@@ -631,20 +648,16 @@ p {
   filter: blur(var(--ink-blur));
 }
 
-.note.ink-1,
-.marker-pen.ink-1 {
+.ink-1 {
   --ink: var(--ink-1);
 }
-.note.ink-2,
-.marker-pen.ink-2 {
+.ink-2 {
   --ink: var(--ink-2);
 }
-.note.ink-3,
-.marker-pen.ink-3 {
+.ink-3 {
   --ink: var(--ink-3);
 }
-.note.ink-4,
-.marker-pen.ink-4 {
+.ink-4 {
   --ink: var(--ink-4);
 }
 
@@ -1185,6 +1198,613 @@ p {
   transform: scale(1.06);
 }
 
+/* ───────────── Pizarras de contenido (hábitos y resumen) ───────────── */
+
+.surface.flow {
+  height: auto;
+  min-height: clamp(420px, 64vh, 720px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  padding: 24px;
+}
+
+.empty.static {
+  position: static;
+  padding: 24px 0 0;
+}
+
+/* ───────────── Hábitos: la tabla de rayitas ───────────── */
+
+.surface.flow > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.habit-scroll {
+  overflow-x: auto;
+  margin: 0 -8px;
+  padding: 0 8px 4px;
+}
+
+.habit-grid {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.habit-grid thead th {
+  padding: 0 4px 10px;
+  font: 600 var(--fs-small) / 1.2 var(--ui);
+  color: color-mix(in srgb, var(--ink-1) 75%, transparent);
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.habit-grid .dow,
+.habit-grid .date {
+  display: block;
+}
+
+.habit-grid .dow {
+  text-transform: capitalize;
+}
+
+.habit-grid .date {
+  margin-top: 2px;
+  font: 700 22px/1 var(--hand);
+  color: var(--ink-1);
+}
+
+/* Hoy: un círculo a rotulador alrededor de la fecha */
+.habit-grid thead th.today .date {
+  position: relative;
+  display: inline-block;
+}
+
+.habit-grid thead th.today .date::after {
+  content: '';
+  position: absolute;
+  inset: -6px -9px -5px -8px;
+  border: 2px solid var(--ink-3);
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+  transform: rotate(-6deg);
+}
+
+.habit-grid tbody tr {
+  border-top: 2px dashed var(--ghost);
+}
+
+.habit-grid td,
+.habit-grid tbody th {
+  padding: 8px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.habit-grid td.today {
+  background: color-mix(in srgb, var(--ink-1) 3.5%, transparent);
+}
+
+.habit-col {
+  width: 34%;
+  text-align: left !important;
+}
+
+.habit-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.habit-label {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 700 26px/1.1 var(--hand);
+  text-align: left;
+  filter: blur(var(--ink-blur));
+  cursor: text;
+}
+
+.row-tools {
+  display: flex;
+  opacity: 0;
+  transition: opacity 150ms var(--ease-out);
+}
+
+.habit-grid tr:hover .row-tools,
+.habit-grid tr:focus-within .row-tools {
+  opacity: 1;
+}
+
+.row-tools .tool {
+  color: var(--ink-1);
+}
+
+.row-tools .tool:hover {
+  background: var(--ghost);
+}
+
+.habit-rename,
+.habit-add input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--ink-1) 30%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  color: var(--ink-1);
+  caret-color: var(--ink-1);
+  font: 600 var(--fs-ui) / 1 var(--ui);
+}
+
+.habit-rename::placeholder,
+.habit-add input::placeholder {
+  color: color-mix(in srgb, var(--ink-1) 62%, transparent);
+}
+
+.habit-rename:focus,
+.habit-add input:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 0;
+  border-color: transparent;
+}
+
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font: 600 13px/1.3 var(--ui);
+}
+
+.confirm button {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--ink-1) 30%, transparent);
+  border-radius: var(--radius);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.confirm button.danger {
+  border-color: transparent;
+  background: #b91c1c;
+  color: #fff;
+}
+
+.cell {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  transition: background 120ms var(--ease-out), transform 100ms var(--ease-out);
+}
+
+.cell:hover:not(:disabled) {
+  background: var(--ghost);
+}
+
+.cell:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.cell:disabled {
+  opacity: 0.3;
+}
+
+.cell svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.cell path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cell .box {
+  stroke-width: 1.6;
+  opacity: 0.55;
+}
+
+.cell .tick {
+  stroke-width: 2.8;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition:
+    stroke-dashoffset 250ms var(--ease-out),
+    opacity 0s 250ms;
+}
+
+.cell.done .tick {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 250ms var(--ease-out);
+}
+
+.streak-col {
+  width: 96px;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.streak {
+  font: 700 30px/1 var(--hand);
+  color: var(--ink);
+}
+
+.streak-meta {
+  display: block;
+  font: 600 var(--fs-small) / 1.3 var(--ui);
+  color: color-mix(in srgb, var(--ink-1) 75%, transparent);
+}
+
+.habit-add {
+  display: flex;
+  gap: 8px;
+  max-width: 560px;
+}
+
+.habit-add .add {
+  flex: none;
+}
+
+.habit-add .add:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestions button {
+  height: 36px;
+  padding: 0 14px;
+  border: 2px dashed color-mix(in srgb, var(--ink-1) 35%, transparent);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-1);
+  font: 700 20px/1 var(--hand);
+}
+
+.suggestions button:hover {
+  border-style: solid;
+}
+
+/* ───────────── Resumen ───────────── */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  border-bottom: 2px dashed var(--ghost);
+}
+
+.kpis > div {
+  padding: 4px 20px 20px;
+}
+
+.kpis > div + div {
+  border-left: 2px dashed var(--ghost);
+}
+
+.kpis > div:first-child {
+  padding-left: 0;
+}
+
+.kpis dt {
+  font: 600 var(--fs-small) / 1.3 var(--ui);
+  color: color-mix(in srgb, var(--ink-1) 75%, transparent);
+}
+
+.kpis dd {
+  margin: 6px 0 0;
+  font: 700 40px/1 var(--hand);
+}
+
+.kpis dd small {
+  margin-left: 6px;
+  font: 600 var(--fs-ui) / 1.2 var(--ui);
+  opacity: 0.8;
+}
+
+.kpis .muted {
+  opacity: 0.7;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 40px;
+}
+
+.panel {
+  min-width: 0;
+  padding: 0;
+  background: var(--card);
+}
+
+:root[data-theme='corcho'] .panel,
+:root[data-theme='corcho'] .kpis {
+  padding: 16px;
+  color: var(--paper-ink);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.12), 0 6px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+:root[data-theme='corcho'] .kpis {
+  background: var(--paper);
+  border: 0;
+}
+
+.panel-wide {
+  grid-column: 1 / -1;
+}
+
+.panel h2 {
+  margin: 0;
+  font: 700 30px/1.1 var(--hand);
+  filter: blur(var(--ink-blur));
+}
+
+.panel-note {
+  margin: 4px 0 16px;
+  font-size: var(--fs-ui);
+  color: color-mix(in srgb, currentColor 80%, transparent);
+}
+
+/* Mapa de calor */
+.heat-wrap {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.heat-days {
+  display: grid;
+  grid-template-rows: repeat(7, 16px);
+  gap: 4px;
+  margin-top: 20px;
+  font: 600 11px/16px var(--ui);
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.heat-months {
+  display: grid;
+  grid-template-columns: repeat(18, 16px);
+  gap: 4px;
+  height: 20px;
+  font: 600 11px/1 var(--ui);
+  color: color-mix(in srgb, currentColor 75%, transparent);
+  white-space: nowrap;
+}
+
+.heat {
+  display: grid;
+  grid-template-rows: repeat(7, 16px);
+  grid-auto-columns: 16px;
+  grid-auto-flow: column;
+  gap: 4px;
+}
+
+.heat-cell {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--ghost);
+}
+
+.heat-cell.l1 {
+  background: color-mix(in srgb, var(--ink-2) 30%, transparent);
+}
+.heat-cell.l2 {
+  background: color-mix(in srgb, var(--ink-2) 55%, transparent);
+}
+.heat-cell.l3 {
+  background: color-mix(in srgb, var(--ink-2) 78%, transparent);
+}
+.heat-cell.l4 {
+  background: var(--ink-2);
+}
+.heat-cell.lx {
+  background: transparent;
+}
+
+.heat-cell.today {
+  outline: 2px solid var(--ink-3);
+  outline-offset: 1px;
+}
+
+.heat-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font: 600 11px/1 var(--ui);
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.heat-legend .heat-cell {
+  width: 12px;
+  height: 12px;
+}
+
+/* Barras por día de la semana */
+.bar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.bar-list li {
+  display: grid;
+  grid-template-columns: 36px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+  font: 600 13px/1 var(--ui);
+}
+
+.bar-track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--ghost);
+  overflow: hidden;
+}
+
+.bar-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--ink-2) 55%, transparent);
+  transition: width 500ms var(--ease-out);
+}
+
+.bar-list li.best .bar-track span {
+  background: var(--ink-2);
+}
+
+.bar-list li.best .bar-label {
+  text-decoration: underline 2px var(--ink-3);
+  text-underline-offset: 4px;
+}
+
+.bar-value {
+  text-align: right;
+}
+
+/* Columnas por semana */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  align-items: end;
+  gap: 8px;
+  height: 180px;
+}
+
+.column {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  gap: 6px;
+  height: 100%;
+  font: 600 11px/1 var(--ui);
+}
+
+.column-track {
+  position: relative;
+  width: 100%;
+  max-width: 28px;
+  border-bottom: 2px solid var(--ghost);
+}
+
+.column-track span {
+  position: absolute;
+  inset: auto 0 0;
+  border-radius: 3px 3px 0 0;
+  background: color-mix(in srgb, var(--ink-2) 55%, transparent);
+  transition: height 500ms var(--ease-out);
+}
+
+.column.current .column-track span {
+  background: var(--ink-2);
+}
+
+.column-label,
+.column-value {
+  color: color-mix(in srgb, currentColor 80%, transparent);
+}
+
+/* Tabla de hábitos */
+.habit-stats {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-ui);
+}
+
+.habit-stats th,
+.habit-stats td {
+  padding: 8px 0;
+  text-align: left;
+}
+
+.habit-stats thead th {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.habit-stats tbody tr {
+  border-top: 2px dashed var(--ghost);
+}
+
+.habit-stats tbody th {
+  font: 700 22px/1.1 var(--hand);
+}
+
+.habit-stats .num-col {
+  width: 64px;
+  text-align: right;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .theme-name {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kpis > div:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .kpis > div:nth-child(n + 3) {
+    border-top: 2px dashed var(--ghost);
+    padding-top: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (pointer: coarse) {
+  .row-tools {
+    opacity: 1;
+  }
+
+  .cell {
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+  }
+}
+
 /* ───────────── Táctil: zonas de toque de 44px ───────────── */
 
 @media (pointer: coarse) {
@@ -1233,10 +1853,49 @@ p {
     border-top: 1px solid var(--wall-line);
   }
 
+  .tabs {
+    overflow-x: auto;
+  }
+
   .tabs button {
-    flex: 1;
+    flex: 1 0 auto;
     justify-content: center;
-    padding: 0 4px;
+    padding: 0 8px;
+  }
+
+  .tabs-gap {
+    margin: 0 2px;
+  }
+
+  .surface.flow {
+    padding: 20px 14px 28px;
+  }
+
+  .habit-add {
+    flex-direction: column;
+  }
+
+  /* La tabla se desplaza dentro de su marco; el nombre del hábito queda fijo a la izquierda */
+  .habit-grid {
+    min-width: 500px;
+  }
+
+  .habit-col {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 150px;
+    min-width: 150px;
+    background: var(--surface);
+  }
+
+  .habit-label {
+    font-size: 22px;
+  }
+
+  .row-tools .tool {
+    width: 36px;
+    height: 36px;
   }
 
   .frame {
