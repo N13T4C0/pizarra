@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Habit, Horizon, Note } from '../lib/types'
 import { HORIZONS, periodKey, periodLabel } from '../lib/periods'
 import { NoteItem, type DragState } from './NoteItem'
@@ -44,6 +44,26 @@ interface Props {
 export function Board(props: Props) {
   const { horizon, viewDate, isCurrent, notes } = props
   const surfaceRef = useRef<HTMLDivElement>(null)
+  const [movingId, setMovingId] = useState<string | null>(null)
+  const moving = notes.find((n) => n.id === movingId)
+
+  useEffect(() => {
+    if (!movingId) return
+    const cancel = (e: KeyboardEvent) => e.key === 'Escape' && setMovingId(null)
+    document.addEventListener('keydown', cancel)
+    return () => document.removeEventListener('keydown', cancel)
+  }, [movingId])
+
+  const placeMoving = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!movingId || e.target !== e.currentTarget) return
+    const r = e.currentTarget.getBoundingClientRect()
+    const clamp = (v: number) => Math.min(Math.max(v, 0), 90)
+    props.onUpdate(movingId, {
+      x: clamp(((e.clientX - r.left) / r.width) * 100 - 2),
+      y: clamp(((e.clientY - r.top) / r.height) * 100 - 3),
+    })
+    setMovingId(null)
+  }
   const { title, subtitle } = periodLabel(horizon, viewDate)
   const meta = HORIZONS.find((h) => h.id === horizon)!
   const done = notes.filter((n) => n.done).length
@@ -107,7 +127,21 @@ export function Board(props: Props) {
         />
       )}
 
-      <div ref={surfaceRef} className="surface" onDoubleClick={onDoubleClick}>
+      {moving && (
+        <div className="move-hint" role="status">
+          <p>
+            Haz clic donde quieras colocar <strong>«{moving.text}»</strong>
+          </p>
+          <button onClick={() => setMovingId(null)}>Cancelar</button>
+        </div>
+      )}
+
+      <div
+        ref={surfaceRef}
+        className={`surface ${movingId ? 'placing' : ''}`}
+        onDoubleClick={onDoubleClick}
+        onClick={placeMoving}
+      >
         {notes.length === 0 && (
           <div className="empty">
             <p className="empty-title">{isCurrent ? `Nada escrito para ${meta.this} todavía` : 'Nada escrito en este periodo'}</p>
@@ -138,6 +172,8 @@ export function Board(props: Props) {
               onLink={(parentId) => props.onLink(n.id, parentId)}
               onBreakDown={props.onBreakDown && (() => props.onBreakDown!(n))}
               onOpenParent={() => parent && props.onOpenParent(parent)}
+              onStartMove={() => setMovingId((id) => (id === n.id ? null : n.id))}
+              moving={n.id === movingId}
             />
           )
         })}

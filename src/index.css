@@ -11,6 +11,7 @@
   --fs-small: 12px;
   --fs-ui: 14px;
 
+  --on-ink: #ffffff;
   --radius: 6px;
   --control: 36px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -31,27 +32,29 @@
 
 :root,
 :root[data-theme='blanca'] {
-  --wall: #e8e5df;
+  --wall: #e4e5e3;
   --wall-ink: #26241f;
-  --wall-muted: #5c5850;
-  --wall-line: #d3cfc6;
-  --focus: #1d4ed8;
+  --wall-muted: #575a57;
+  --wall-line: #cfd1ce;
+  --focus: #1f4fb4;
 
-  --frame: linear-gradient(180deg, #e3e6ea, #b8bdc4 45%, #d5d9de);
-  --frame-shadow: 0 1px 0 #fff inset, 0 18px 40px -18px rgb(0 0 0 / 0.4), 0 4px 10px -4px rgb(0 0 0 / 0.2);
+  /* Aluminio: un gris plano con bisel claro arriba y oscuro abajo */
+  --frame: #c9cdd3;
+  --frame-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.75),
+    inset 0 -3px 0 rgb(0 0 0 / 0.12),
+    0 1px 2px rgb(0 0 0 / 0.08);
   --surface: #fbfcfa;
-  --surface-art:
-    radial-gradient(ellipse 40% 25% at 22% 30%, #e9ecef66, transparent 70%),
-    radial-gradient(ellipse 30% 20% at 75% 70%, #e4e8ec55, transparent 70%),
-    linear-gradient(160deg, #ffffff 0%, #f3f5f4 60%, #eef1f0 100%);
-  --tray: linear-gradient(180deg, #cfd3d8, #a9aeb6);
+  --surface-art: none;
+  --tray: #b9bec5;
   --tray-ink: #1f2328;
 
   --ink-1: #1f2328;
-  --ink-2: #1d4ed8;
+  --ink-2: #1f4fb4;
   --ink-3: #c62828;
   --ink-4: #17803d;
   --ink-blur: 0px;
+  --on-ink: #ffffff;
   --ghost: rgb(31 35 40 / 0.1);
   --card: transparent;
 }
@@ -63,15 +66,18 @@
   --wall-line: #47423c;
   --focus: #f7e27a;
 
-  --frame: linear-gradient(180deg, #9a6a3d, #6e4624 50%, #8a5a30);
-  --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.19) inset, 0 18px 40px -16px rgb(0 0 0 / 0.8);
+  /* Madera: marrón plano con bisel */
+  --frame: #7f532c;
+  --frame-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.18),
+    inset 0 -3px 0 rgb(0 0 0 / 0.25),
+    0 1px 2px rgb(0 0 0 / 0.08);
   --surface: #2f4a3a;
   --surface-art:
-    radial-gradient(ellipse 45% 30% at 25% 35%, #ffffff0d, transparent 70%),
-    radial-gradient(ellipse 35% 25% at 70% 65%, #ffffff0a, transparent 70%),
-    repeating-radial-gradient(circle at 30% 40%, #ffffff05 0 1px, transparent 1px 3px),
-    linear-gradient(160deg, #35533f, #2b4436);
-  --tray: linear-gradient(180deg, #8a5a30, #5e3a1c);
+    radial-gradient(ellipse 45% 30% at 25% 35%, #ffffff0d, transparent 70%), /* taste-skill-ignore: restos de tiza borrada */
+    radial-gradient(ellipse 35% 25% at 70% 65%, #ffffff0a, transparent 70%), /* taste-skill-ignore: restos de tiza borrada */
+    repeating-radial-gradient(circle at 30% 40%, #ffffff05 0 1px, transparent 1px 3px); /* taste-skill-ignore: polvo de tiza, es la textura del material */
+  --tray: #6e4624;
   --tray-ink: #ffffff;
 
   --ink-1: #f4f1e8;
@@ -79,27 +85,30 @@
   --ink-3: #f4a6b8;
   --ink-4: #9fd3f0;
   --ink-blur: 0.4px;
+  --on-ink: #1d2b23;
   --ghost: rgb(255 255 255 / 0.14);
   --card: transparent;
 }
 
 :root[data-theme='corcho'] {
-  --wall: #ebe4d8;
+  --wall: #dfe0dd;
   --wall-ink: #2e251c;
   --wall-muted: #66584b;
-  --wall-line: #d6cab8;
+  --wall-line: #c9cbc7;
   --focus: #1e40af;
 
-  --frame: linear-gradient(180deg, #a87447, #7a4e2d 50%, #956139);
-  --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.25) inset, 0 18px 40px -18px rgb(0 0 0 / 0.45);
+  --frame: #8b5a33;
+  --frame-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.2),
+    inset 0 -3px 0 rgb(0 0 0 / 0.22),
+    0 1px 2px rgb(0 0 0 / 0.08);
   --surface: #c69c6d;
   --surface-art:
-    radial-gradient(circle at 20% 30%, #a77a4c 0 1.2px, transparent 1.6px),
-    radial-gradient(circle at 70% 60%, #dcb889 0 1px, transparent 1.5px),
-    radial-gradient(circle at 45% 80%, #8f6438 0 1px, transparent 1.4px),
-    linear-gradient(160deg, #cfa677, #bb8f5f);
-  --surface-size: 9px 9px, 7px 7px, 11px 11px, auto;
-  --tray: linear-gradient(180deg, #956139, #6a4325);
+    radial-gradient(circle at 20% 30%, #a77a4c 0 1.2px, transparent 1.6px), /* taste-skill-ignore: grano del corcho */
+    radial-gradient(circle at 70% 60%, #dcb889 0 1px, transparent 1.5px), /* taste-skill-ignore: grano del corcho */
+    radial-gradient(circle at 45% 80%, #8f6438 0 1px, transparent 1.4px); /* taste-skill-ignore: grano del corcho */
+  --surface-size: 9px 9px, 7px 7px, 11px 11px;
+  --tray: #7a4e2d;
   --tray-ink: #ffffff;
 
   --ink-1: #23201c;
@@ -356,14 +365,18 @@ p {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 14px;
-  font: 700 clamp(34px, 4vw, 46px) / 1 var(--hand);
+  font: 700 clamp(30px, 3vw, 38px) / 1 var(--hand);
   filter: blur(var(--ink-blur));
 }
 
 .period small {
-  font-size: 0.55em;
+  font-size: 0.6em;
   font-weight: 500;
-  opacity: 0.75;
+  opacity: 0.85;
+}
+
+:root[data-theme='corcho'] .period small {
+  opacity: 1;
 }
 
 .board-actions {
@@ -492,7 +505,7 @@ p {
   background: var(--paper);
   color: var(--paper-ink);
   font-size: var(--fs-ui);
-  box-shadow: 0 1px 1px rgb(0 0 0 / 0.12), 0 8px 14px -10px rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08), 0 3px 4px -2px rgb(0 0 0 / 0.08);
   transform: rotate(-0.4deg);
 }
 
@@ -708,8 +721,50 @@ p {
   min-width: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  background: var(--ink);
+  color: var(--on-ink);
   font: 700 11px/1 var(--ui);
+}
+
+/* ───────────── Mover con un clic ───────────── */
+
+.move-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 24px 0;
+  padding: 8px 8px 8px 14px;
+  border-radius: var(--radius);
+  background: var(--ink-1);
+  color: var(--surface);
+  font-size: var(--fs-ui);
+}
+
+:root[data-theme='corcho'] .move-hint {
+  color: #fff;
+}
+
+.move-hint p {
+  flex: 1;
+  min-width: 0;
+}
+
+.move-hint button {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  background: transparent;
+  font-weight: 600;
+}
+
+.surface.placing {
+  cursor: crosshair;
+}
+
+.note.moving {
+  outline: 2px dashed var(--focus);
+  outline-offset: 6px;
 }
 
 /* ───────────── Notas ───────────── */
@@ -795,7 +850,7 @@ p {
 
 :root[data-theme='corcho'] .note.marker {
   padding: 14px 14px 10px 10px;
-  box-shadow: 0 1px 1px rgb(0 0 0 / 0.12), 0 6px 10px -6px rgb(0 0 0 / 0.5);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08), 0 3px 4px -2px rgb(0 0 0 / 0.08);
 }
 
 /* Post-it: papel de color, siempre con tinta oscura */
@@ -807,21 +862,21 @@ p {
   padding: 22px 14px 14px 12px;
   border-radius: 2px 2px 14px 2px;
   box-shadow:
-    0 1px 1px rgb(0 0 0 / 0.12),
-    0 10px 14px -8px rgb(0 0 0 / 0.4);
+    0 1px 1px rgb(0 0 0 / 0.08),
+    0 3px 4px -2px rgb(0 0 0 / 0.08);
 }
 
 .note.postit-yellow {
-  background: linear-gradient(170deg, #fff1a8, #fde68a);
+  background: #fde68a;
 }
 .note.postit-pink {
-  background: linear-gradient(170deg, #fde0ef, #fbcfe8);
+  background: #fbcfe8;
 }
 .note.postit-blue {
-  background: linear-gradient(170deg, #dbeafe, #bfdbfe);
+  background: #bfdbfe;
 }
 .note.postit-green {
-  background: linear-gradient(170deg, #dcfce7, #bbf7d0);
+  background: #bbf7d0;
 }
 
 /* Imán (pizarra) o chincheta (corcho) arriba del post-it */
@@ -835,12 +890,12 @@ p {
   height: 16px;
   margin-left: -8px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ff8a80, #c62828 60%, #7f1d1d);
+  background: radial-gradient(circle at 35% 30%, #ff8a80, #c62828 60%, #7f1d1d); /* taste-skill-ignore: el brillo de la esfera del imán */
   box-shadow: 0 3px 4px rgb(0 0 0 / 0.33);
 }
 
 :root[data-theme='tiza'] .note.postit::before {
-  background: radial-gradient(circle at 35% 30%, #bae6fd, #2563eb 60%, #1e3a8a);
+  background: radial-gradient(circle at 35% 30%, #bae6fd, #2f5fd0 60%, #1e3a8a); /* taste-skill-ignore: el brillo de la esfera del imán */
 }
 
 .note .body {
@@ -883,7 +938,7 @@ p {
 
 /* Tachado: una raya por cada línea del texto que se "dibuja" al completar */
 .strike {
-  background: linear-gradient(currentColor, currentColor) no-repeat 0 60% / 0% 3px;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 60% / 0% 3px; /* taste-skill-ignore: es la raya del tachado, un color plano */
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   border-radius: 2px;
@@ -1192,8 +1247,8 @@ p {
   background: var(--tray);
   color: var(--tray-ink);
   box-shadow:
-    inset 0 2px 3px rgb(0 0 0 / 0.2),
-    inset 0 1px 0 rgb(255 255 255 / 0.25);
+    inset 0 2px 0 rgb(0 0 0 / 0.12),
+    inset 0 -2px 0 rgb(255 255 255 / 0.2);
 }
 
 .markers,
@@ -1224,7 +1279,7 @@ p {
   width: 46px;
   height: 14px;
   border-radius: 2px 5px 5px 2px;
-  background: linear-gradient(180deg, #ffffff, #d8dadd);
+  background: #f1f2f4;
   border-left: 4px solid var(--ink);
   box-shadow: 0 2px 3px rgb(0 0 0 / 0.27);
 }
@@ -1314,7 +1369,8 @@ p {
   width: 56px;
   height: 22px;
   border-radius: 4px;
-  background: linear-gradient(180deg, #4b5563 0 55%, #e5e7eb 55%);
+  background: #e5e7eb;
+  border-top: 12px solid #4b5563;
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.33);
 }
 
@@ -1477,7 +1533,13 @@ p {
 
 .habit-rename::placeholder,
 .habit-add input::placeholder {
-  color: color-mix(in srgb, var(--ink-1) 62%, transparent);
+  color: color-mix(in srgb, var(--ink-1) 72%, transparent);
+}
+
+:root[data-theme='corcho'] .habit-rename,
+:root[data-theme='corcho'] .habit-add input {
+  background: var(--paper);
+  border-color: #b9a58c;
 }
 
 .habit-rename:focus,
@@ -1594,6 +1656,8 @@ p {
 
 .habit-add .add {
   flex: none;
+  width: auto;
+  white-space: nowrap;
 }
 
 .habit-add .add:disabled {
@@ -1678,7 +1742,7 @@ p {
 :root[data-theme='corcho'] .kpis {
   padding: 16px;
   color: var(--paper-ink);
-  box-shadow: 0 1px 1px rgb(0 0 0 / 0.12), 0 6px 10px -6px rgb(0 0 0 / 0.5);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.08), 0 3px 4px -2px rgb(0 0 0 / 0.08);
 }
 
 :root[data-theme='corcho'] .kpis {
@@ -2042,6 +2106,10 @@ p {
     margin: 16px 12px 0;
   }
 
+  .tool-move {
+    display: none;
+  }
+
   .habit-strip {
     flex-direction: column;
     align-items: flex-start;
@@ -2059,7 +2127,7 @@ p {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 28px;
     padding: 24px 16px 32px;
   }
 
@@ -2076,7 +2144,11 @@ p {
     width: auto;
     min-width: 200px;
     min-height: 0;
-    margin-top: 6px;
+    margin-top: 10px;
+  }
+
+  .note {
+    transform: none;
   }
 
   .empty {

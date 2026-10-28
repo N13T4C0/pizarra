@@ -8,6 +8,7 @@ const PATHS = {
   check: 'M3.5 8.5 6.5 11.5 12.5 4.5',
   carry: 'M12.5 6.5A5 5 0 1 0 13 9M12.5 2.5v4h-4',
   pen: 'M3 13l1-3.5L10.5 3 13 5.5 6.5 12z',
+  move: 'M8 2v12M2 8h12M6 4l2-2 2 2M6 12l2 2 2-2M4 6 2 8l2 2M12 6l2 2-2 2',
 } as const
 
 export type IconName = keyof typeof PATHS

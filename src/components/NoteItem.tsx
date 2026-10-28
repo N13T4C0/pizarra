@@ -26,6 +26,9 @@ interface Props {
   onLink: (parentId: string | undefined) => void
   onBreakDown?: () => void
   onOpenParent: () => void
+  /** Alternativa al arrastre con un solo clic: elegir la nota y luego el sitio (WCAG 2.2, 2.5.7). */
+  onStartMove: () => void
+  moving: boolean
 }
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
@@ -55,6 +58,8 @@ export function NoteItem({
   onLink,
   onBreakDown,
   onOpenParent,
+  onStartMove,
+  moving,
 }: Props) {
   const [editing, setEditing] = useState(startEditing)
   const [draft, setDraft] = useState(note.text)
@@ -196,6 +201,7 @@ export function NoteItem({
     editing && 'editing',
     menuOpen && 'menu-open',
     flash && 'flash',
+    moving && 'moving',
   ]
     .filter(Boolean)
     .join(' ')
@@ -298,6 +304,9 @@ export function NoteItem({
             <Icon name="plus" />
           </button>
         )}
+        <button className="tool tool-move" aria-label="Mover a otro sitio" title="Mover a otro sitio" aria-pressed={moving} onClick={onStartMove}>
+          <Icon name="move" />
+        </button>
         <button className="tool" aria-label="Borrar" title="Borrar" onClick={erase}>
           <Icon name="close" />
         </button>
