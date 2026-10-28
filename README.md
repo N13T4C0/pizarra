@@ -1,5 +1,7 @@
 # Pizarra
 
+**[Ver en vivo](https://n13t4c0.github.io/pizarra/)**
+
 Una pizarra interactiva para organizar objetivos por **día, semana, mes y año**, con el aspecto y el tacto de una pizarra física.
 
 ## Funciones
