@@ -25,17 +25,18 @@ export function CarryOver({ horizon, pending, onCarry, onDismiss }: Props) {
 
   return (
     <div className="carry" role="region" aria-label="Pendientes de periodos anteriores">
+      <span className="tape" aria-hidden="true" />
       <div className="carry-head">
-        <span>
-          <strong>{n}</strong> {n === 1 ? 'objetivo sin terminar' : 'objetivos sin terminar'} de {PAST[horizon]}
-        </span>
+        <p>
+          <strong className="num">{n}</strong> {n === 1 ? 'objetivo quedó sin terminar' : 'objetivos quedaron sin terminar'} en {PAST[horizon]}
+        </p>
         <button className="primary" onClick={() => onCarry(all)}>
-          Pasar {n === 1 ? 'aquí' : 'todos aquí'}
+          {n === 1 ? 'Pasar aquí' : `Pasar los ${n} aquí`}
         </button>
         <button onClick={() => setOpen((o) => !o)} aria-expanded={open}>
           {open ? 'Ocultar' : 'Revisar'}
         </button>
-        <button onClick={() => onDismiss(all)}>Descartar</button>
+        <button onClick={() => onDismiss(all)}>{n === 1 ? 'Descartar' : 'Descartar todos'}</button>
       </div>
 
       {open && (

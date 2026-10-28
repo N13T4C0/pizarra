@@ -37,7 +37,7 @@ function seedNotes(): Note[] {
   return [
     today,
     makeNote('day', day, { kind: 'marker', ink: 2 }, 6, 28, 'Terminar la práctica de BBDD'),
-    makeNote('day', day, { kind: 'postit', color: 'yellow' }, 58, 10, 'Ir al gimnasio 💪'),
+    makeNote('day', day, { kind: 'postit', color: 'yellow' }, 58, 10, 'Ir al gimnasio'),
     makeNote('week', week, { kind: 'marker', ink: 1 }, 6, 8, 'Repasar temas 1–3'),
     pages,
     book,
@@ -167,32 +167,42 @@ export default function App() {
           Pizarra
         </div>
 
-        <nav className="tabs" aria-label="Pizarras">
-          {HORIZONS.map((h) => {
-            const pending = pendingFor(h.id)
-            return (
-              <button key={h.id} aria-pressed={h.id === horizon} onClick={() => switchHorizon(h.id)}>
-                {h.label}
-                {pending > 0 && <span className="badge">{pending}</span>}
-              </button>
-            )
-          })}
-        </nav>
-
         <div className="theme-picker" role="radiogroup" aria-label="Tipo de pizarra">
           {THEMES.map((t) => (
             <button
               key={t.id}
               role="radio"
               aria-checked={t.id === theme}
+              aria-label={`Pizarra ${t.label.toLowerCase()}`}
               title={`Pizarra ${t.label.toLowerCase()}`}
               onClick={() => setTheme(t.id)}
             >
               <span className={`swatch swatch-${t.id}`} aria-hidden="true" />
-              {t.label}
+              <span className="theme-name">{t.label}</span>
             </button>
           ))}
         </div>
+
+        <nav className="tabs" aria-label="Pizarras">
+          {HORIZONS.map((h) => {
+            const pending = pendingFor(h.id)
+            return (
+              <button
+                key={h.id}
+                aria-current={h.id === horizon ? 'page' : undefined}
+                aria-label={pending > 0 ? `${h.label}, ${pending} pendientes` : h.label}
+                onClick={() => switchHorizon(h.id)}
+              >
+                {h.label}
+                {pending > 0 && (
+                  <span className="count num" aria-hidden="true">
+                    {pending}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </nav>
       </header>
 
       <main className="wall">
@@ -228,9 +238,6 @@ export default function App() {
           />
           <Tray ref={eraserRef} tool={tool} dragState={dragState} onTool={setTool} />
         </div>
-        <p className="hint">
-          Doble clic para escribir · Arrastra para mover · Suelta en el borrador para borrar · ↑ vincula a un objetivo mayor · + lo divide en pasos
-        </p>
       </main>
     </div>
   )

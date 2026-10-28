@@ -3,6 +3,7 @@ import type { Horizon, Note } from '../lib/types'
 import { HORIZONS, periodLabel } from '../lib/periods'
 import { NoteItem, type DragState } from './NoteItem'
 import { CarryOver } from './CarryOver'
+import { Icon } from './Icon'
 
 interface Props {
   horizon: Horizon
@@ -54,19 +55,16 @@ export function Board(props: Props) {
   return (
     <section className="board" aria-label={`Pizarra: ${meta.current}`}>
       <header className="board-head">
-        <div className="period">
-          <span className="eyebrow">{isCurrent ? meta.current : meta.label}</span>
-          <h1>
-            {title}
-            {subtitle && <small> · {subtitle}</small>}
-          </h1>
-        </div>
+        <h1 className="period">
+          {title}
+          {subtitle && <small>{subtitle}</small>}
+        </h1>
 
         <div className="board-actions">
           {notes.length > 0 && (
             <div className="progress" title={`${done} de ${notes.length} hechos`}>
-              <span>
-                {done}/{notes.length}
+              <span className="num">
+                {done} de {notes.length}
               </span>
               <svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
                 <path className="track" d="M2 5 H98" />
@@ -75,11 +73,20 @@ export function Board(props: Props) {
             </div>
           )}
           <nav className="pager" aria-label="Cambiar periodo">
-            <button onClick={props.onPrev} aria-label="Periodo anterior">‹</button>
-            <button onClick={props.onToday} disabled={isCurrent}>Hoy</button>
-            <button onClick={props.onNext} aria-label="Periodo siguiente">›</button>
+            <button onClick={props.onPrev} aria-label="Periodo anterior" title="Periodo anterior">
+              <Icon name="chevron-left" />
+            </button>
+            <button onClick={props.onToday} disabled={isCurrent}>
+              {meta.today}
+            </button>
+            <button onClick={props.onNext} aria-label="Periodo siguiente" title="Periodo siguiente">
+              <Icon name="chevron-right" />
+            </button>
           </nav>
-          <button className="add" onClick={() => props.onAdd()}>+ Escribir</button>
+          <button className="add" onClick={() => props.onAdd()}>
+            <Icon name="pen" />
+            Escribir
+          </button>
         </div>
       </header>
 
@@ -87,11 +94,11 @@ export function Board(props: Props) {
 
       <div ref={surfaceRef} className="surface" onDoubleClick={onDoubleClick}>
         {notes.length === 0 && (
-          <p className="empty">
-            Pizarra limpia.
-            <br />
-            Haz doble clic para escribir un objetivo.
-          </p>
+          <div className="empty">
+            <p className="empty-title">{isCurrent ? `Nada escrito para ${meta.this} todavía` : 'Nada escrito en este periodo'}</p>
+            <p>Haz doble clic en cualquier parte de la pizarra, o pulsa Escribir.</p>
+            <p>Para borrar una nota, arrástrala hasta el borrador.</p>
+          </div>
         )}
         {notes.map((n) => {
           const parent = props.parentOf(n)

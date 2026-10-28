@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Note } from '../lib/types'
+import { Icon } from './Icon'
 
 export type DragState = 'idle' | 'dragging' | 'over-eraser'
 
@@ -253,7 +254,8 @@ export function NoteItem({
 
         {parent && (
           <button className="parent-tag" onClick={onOpenParent} title={`Ver en la pizarra de ${parentLabel}`}>
-            ↑ {parent.text}
+            <Icon name="link" size={12} />
+            <span>{parent.text}</span>
           </button>
         )}
 
@@ -269,7 +271,8 @@ export function NoteItem({
 
       {!!note.carried && (
         <span className="carried" title={`Aplazado ${note.carried} ${note.carried === 1 ? 'vez' : 'veces'}`}>
-          ↻{note.carried}
+          <Icon name="carry" size={11} />
+          {note.carried}
         </span>
       )}
 
@@ -282,7 +285,7 @@ export function NoteItem({
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((o) => !o)}
           >
-            ↑
+            <Icon name="link" />
           </button>
         )}
         {onBreakDown && (
@@ -292,17 +295,17 @@ export function NoteItem({
             title={`Añadir un paso en ${childLabel}`}
             onClick={onBreakDown}
           >
-            +
+            <Icon name="plus" />
           </button>
         )}
         <button className="tool" aria-label="Borrar" title="Borrar" onClick={erase}>
-          ×
+          <Icon name="close" />
         </button>
       </div>
 
       {menuOpen && linkCandidates && (
         <div className="link-menu" role="menu">
-          <p>Forma parte de… ({parentLabel})</p>
+          <p>Forma parte de un objetivo de {parentLabel}</p>
           {linkCandidates.length === 0 && <p className="none">No hay objetivos en {parentLabel}.</p>}
           {linkCandidates.map((c) => (
             <button
@@ -314,7 +317,8 @@ export function NoteItem({
                 setMenuOpen(false)
               }}
             >
-              {c.text}
+              <span>{c.text}</span>
+              {c.id === note.parentId && <Icon name="check" />}
             </button>
           ))}
           {note.parentId && (

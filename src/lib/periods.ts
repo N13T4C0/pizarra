@@ -65,11 +65,11 @@ export function periodLabel(h: Horizon, d: Date): { title: string; subtitle?: st
   }
 }
 
-export const HORIZONS: { id: Horizon; label: string; current: string }[] = [
-  { id: 'day', label: 'Hoy', current: 'Objetivos de hoy' },
-  { id: 'week', label: 'Semana', current: 'Esta semana' },
-  { id: 'month', label: 'Mes', current: 'Este mes' },
-  { id: 'year', label: 'Año', current: 'Este año' },
+export const HORIZONS: { id: Horizon; label: string; current: string; today: string; this: string }[] = [
+  { id: 'day', label: 'Hoy', current: 'Objetivos de hoy', today: 'Hoy', this: 'hoy' },
+  { id: 'week', label: 'Semana', current: 'Esta semana', today: 'Esta semana', this: 'esta semana' },
+  { id: 'month', label: 'Mes', current: 'Este mes', today: 'Este mes', this: 'este mes' },
+  { id: 'year', label: 'Año', current: 'Este año', today: 'Este año', this: 'este año' },
 ]
 
 export const PARENT: Record<Horizon, Horizon | null> = { day: 'week', week: 'month', month: 'year', year: null }
