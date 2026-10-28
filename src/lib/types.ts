@@ -22,4 +22,10 @@ export interface Note {
   y: number
   rot: number
   createdAt: number
+  /** Objetivo del nivel superior del que forma parte (día → semana → mes → año). */
+  parentId?: string
+  /** Veces que se ha pasado al periodo siguiente sin terminar. */
+  carried?: number
+  /** Pendiente que se decidió no pasar; ya no se vuelve a ofrecer. */
+  dismissed?: boolean
 }

@@ -71,3 +71,21 @@ export const HORIZONS: { id: Horizon; label: string; current: string }[] = [
   { id: 'month', label: 'Mes', current: 'Este mes' },
   { id: 'year', label: 'Año', current: 'Este año' },
 ]
+
+export const PARENT: Record<Horizon, Horizon | null> = { day: 'week', week: 'month', month: 'year', year: null }
+export const CHILD: Record<Horizon, Horizon | null> = { day: null, week: 'day', month: 'week', year: 'month' }
+
+/** Nombre corto de un periodo a partir de su clave, para listas: "27 oct", "Sem. 43", "sept 2026". */
+export function periodShort(h: Horizon, key: string): string {
+  const [y, m, d] = key.split('-').map((p) => parseInt(p.replace('W', ''), 10))
+  switch (h) {
+    case 'day':
+      return fmt({ day: 'numeric', month: 'short' }).format(new Date(y, m - 1, d))
+    case 'week':
+      return `Sem. ${m}`
+    case 'month':
+      return fmt({ month: 'short', year: 'numeric' }).format(new Date(y, m - 1, 1))
+    case 'year':
+      return key
+  }
+}

@@ -2,13 +2,22 @@ import { useRef } from 'react'
 import type { Horizon, Note } from '../lib/types'
 import { HORIZONS, periodLabel } from '../lib/periods'
 import { NoteItem, type DragState } from './NoteItem'
+import { CarryOver } from './CarryOver'
 
 interface Props {
   horizon: Horizon
   viewDate: Date
   isCurrent: boolean
   notes: Note[]
+  /** Pendientes de periodos pasados (solo se muestran en el periodo actual). */
+  pastPending: Note[]
+  linkCandidates: Note[] | null
+  parentLabel?: string
+  childLabel?: string
+  parentOf: (n: Note) => Note | undefined
+  childStats: (n: Note) => { done: number; total: number } | undefined
   freshId: string | null
+  flashId: string | null
   eraserRef: React.RefObject<HTMLDivElement>
   onPrev: () => void
   onNext: () => void
@@ -19,6 +28,11 @@ interface Props {
   onFront: (id: string) => void
   onEditEnd: () => void
   onDragState: (s: DragState) => void
+  onCarry: (ids: string[]) => void
+  onDismiss: (ids: string[]) => void
+  onLink: (id: string, parentId: string | undefined) => void
+  onBreakDown?: (n: Note) => void
+  onOpenParent: (parent: Note) => void
 }
 
 export function Board(props: Props) {
@@ -69,6 +83,8 @@ export function Board(props: Props) {
         </div>
       </header>
 
+      <CarryOver horizon={horizon} pending={props.pastPending} onCarry={props.onCarry} onDismiss={props.onDismiss} />
+
       <div ref={surfaceRef} className="surface" onDoubleClick={onDoubleClick}>
         {notes.length === 0 && (
           <p className="empty">
@@ -77,20 +93,32 @@ export function Board(props: Props) {
             Haz doble clic para escribir un objetivo.
           </p>
         )}
-        {notes.map((n) => (
-          <NoteItem
-            key={n.id}
-            note={n}
-            boardRef={surfaceRef}
-            eraserRef={props.eraserRef}
-            startEditing={n.id === props.freshId}
-            onUpdate={(patch) => props.onUpdate(n.id, patch)}
-            onRemove={() => props.onRemove(n.id)}
-            onFront={() => props.onFront(n.id)}
-            onEditEnd={props.onEditEnd}
-            onDragState={props.onDragState}
-          />
-        ))}
+        {notes.map((n) => {
+          const parent = props.parentOf(n)
+          return (
+            <NoteItem
+              key={n.id}
+              note={n}
+              parent={parent}
+              childStats={props.childStats(n)}
+              linkCandidates={props.linkCandidates}
+              parentLabel={props.parentLabel}
+              childLabel={props.childLabel}
+              flash={n.id === props.flashId}
+              boardRef={surfaceRef}
+              eraserRef={props.eraserRef}
+              startEditing={n.id === props.freshId}
+              onUpdate={(patch) => props.onUpdate(n.id, patch)}
+              onRemove={() => props.onRemove(n.id)}
+              onFront={() => props.onFront(n.id)}
+              onEditEnd={props.onEditEnd}
+              onDragState={props.onDragState}
+              onLink={(parentId) => props.onLink(n.id, parentId)}
+              onBreakDown={props.onBreakDown && (() => props.onBreakDown!(n))}
+              onOpenParent={() => parent && props.onOpenParent(parent)}
+            />
+          )
+        })}
       </div>
     </section>
   )

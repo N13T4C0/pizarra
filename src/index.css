@@ -367,7 +367,7 @@ button {
   gap: 6px;
   max-width: min(320px, 40%);
   min-width: 150px;
-  padding: 6px 28px 6px 6px;
+  padding: 6px 10px 6px 6px;
   transform: rotate(var(--rot));
   cursor: grab;
   user-select: none;
@@ -437,7 +437,7 @@ button {
 }
 
 :root[data-theme='corcho'] .note.marker {
-  padding: 14px 28px 10px 10px;
+  padding: 14px 14px 10px 10px;
   box-shadow: 0 3px 8px -2px #0005;
 }
 
@@ -447,7 +447,7 @@ button {
   color: var(--ink);
   width: clamp(150px, 17vw, 200px);
   min-height: 130px;
-  padding: 22px 28px 14px 12px;
+  padding: 22px 14px 14px 12px;
   border-radius: 2px 2px 14px 2px;
   box-shadow:
     0 1px 1px #0002,
@@ -577,35 +577,281 @@ button {
   transition: stroke-dashoffset 0.3s ease-out;
 }
 
-.remove {
+.note .body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* Etiqueta "↑ objetivo superior": lleva a la pizarra de arriba */
+.parent-tag {
+  max-width: 100%;
+  padding: 0 4px;
+  margin-left: -4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.62em;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.parent-tag:hover {
+  opacity: 1;
+  background: var(--ghost);
+}
+
+/* Progreso de los pasos vinculados */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6em;
+  opacity: 0.85;
+}
+
+.steps-bar {
+  width: 70px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ghost);
+  overflow: hidden;
+}
+
+.note.postit .steps-bar {
+  background: #0000001a;
+}
+
+.steps-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: currentColor;
+  transition: width 0.5s ease;
+}
+
+.carried {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 24px;
-  height: 24px;
+  bottom: -8px;
+  right: -6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #f59e0b;
+  color: #fff;
+  font: 600 11px/18px system-ui, sans-serif;
+  box-shadow: 0 1px 2px #0003;
+}
+
+/* Botonera flotante al pasar por encima de una nota */
+.tools {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 4px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 8px #0003;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+/* Puente invisible para no perder el hover al subir el ratón hasta la botonera */
+.tools::after {
+  content: '';
+  position: absolute;
+  inset: 100% 0 -6px;
+}
+
+.note:hover .tools,
+.note:focus-within .tools,
+.note.menu-open .tools {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.note.editing .tools,
+.note.dragging .tools {
+  display: none;
+}
+
+.tool {
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--ink);
-  font-size: 22px;
-  line-height: 1;
-  opacity: 0;
-  transition: opacity 0.15s, background 0.15s;
+  color: #374151;
+  font: 600 16px/1 system-ui, sans-serif;
 }
 
-.note:hover .remove,
-.note:focus-within .remove {
-  opacity: 0.55;
+.tool:hover,
+.tool[aria-expanded='true'] {
+  background: #f3f4f6;
 }
 
-.remove:hover {
-  opacity: 1 !important;
-  background: #0001;
+.note.menu-open {
+  z-index: 20;
 }
 
-.note.editing .remove {
-  display: none;
+/* Menú para elegir el objetivo superior */
+.link-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  max-width: 300px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 10px;
+  background: #fff;
+  color: #1f2937;
+  box-shadow: 0 8px 24px #0003;
+  font: 14px/1.3 system-ui, sans-serif;
+  cursor: default;
+  transform: rotate(calc(var(--rot) * -1));
+}
+
+.link-menu p {
+  margin: 4px 8px 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.link-menu p.none {
+  font-style: italic;
+}
+
+.link-menu button {
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+}
+
+.link-menu button:hover {
+  background: #f3f4f6;
+}
+
+.link-menu button[aria-checked='true'] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.link-menu button[aria-checked='true']::before {
+  content: '✓ ';
+}
+
+.link-menu .unlink {
+  margin-top: 4px;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 6px 6px;
+  color: #b91c1c;
+}
+
+.note.flash {
+  animation: flash 0.5s ease-in-out 3;
+}
+
+@keyframes flash {
+  50% {
+    transform: rotate(var(--rot)) scale(1.07);
+    filter: drop-shadow(0 0 10px var(--accent));
+  }
+}
+
+/* ───────────── Pendientes de periodos anteriores ───────────── */
+
+.carry {
+  margin: 10px 24px 0;
+  padding: 8px 12px;
+  border: 2px dashed #f59e0b88;
+  border-radius: 8px;
+  background: #fbbf2414;
+  font: 14px/1.4 system-ui, sans-serif;
+  color: var(--ink-1);
+}
+
+.carry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.carry-head span {
+  margin-right: auto;
+}
+
+.carry button {
+  padding: 3px 10px;
+  border: 1px solid var(--ghost);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+}
+
+.carry button:hover {
+  background: var(--ghost);
+}
+
+.carry button.primary {
+  border-color: transparent;
+  background: #f59e0b;
+  color: #fff;
+  font-weight: 600;
+}
+
+.carry button.primary:hover {
+  background: #d97706;
+}
+
+.carry-list {
+  list-style: none;
+  margin: 8px 0 2px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.carry-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.carry-list .when {
+  flex: none;
+  width: 64px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.carry-list .what {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ───────────── Repisa ───────────── */

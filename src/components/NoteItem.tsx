@@ -5,6 +5,15 @@ export type DragState = 'idle' | 'dragging' | 'over-eraser'
 
 interface Props {
   note: Note
+  /** Objetivo superior al que está vinculada, si existe. */
+  parent?: Note
+  /** Progreso de los pasos vinculados a esta nota. */
+  childStats?: { done: number; total: number }
+  /** Objetivos del nivel superior a los que se puede vincular; null en la pizarra anual. */
+  linkCandidates: Note[] | null
+  parentLabel?: string
+  childLabel?: string
+  flash: boolean
   boardRef: React.RefObject<HTMLDivElement>
   eraserRef: React.RefObject<HTMLDivElement>
   startEditing: boolean
@@ -13,6 +22,9 @@ interface Props {
   onFront: () => void
   onEditEnd: () => void
   onDragState: (s: DragState) => void
+  onLink: (parentId: string | undefined) => void
+  onBreakDown?: () => void
+  onOpenParent: () => void
 }
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
@@ -25,6 +37,12 @@ function isOver(el: HTMLElement | null, x: number, y: number) {
 
 export function NoteItem({
   note,
+  parent,
+  childStats,
+  linkCandidates,
+  parentLabel,
+  childLabel,
+  flash,
   boardRef,
   eraserRef,
   startEditing,
@@ -33,11 +51,15 @@ export function NoteItem({
   onFront,
   onEditEnd,
   onDragState,
+  onLink,
+  onBreakDown,
+  onOpenParent,
 }: Props) {
   const [editing, setEditing] = useState(startEditing)
   const [draft, setDraft] = useState(note.text)
   const [live, setLive] = useState<{ x: number; y: number } | null>(null)
   const [erasing, setErasing] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const elRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLTextAreaElement>(null)
   const drag = useRef<{ offX: number; offY: number; sx: number; sy: number; moved: boolean } | null>(null)
@@ -49,6 +71,19 @@ export function NoteItem({
     t.focus()
     t.setSelectionRange(t.value.length, t.value.length)
   }, [editing])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const close = (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !elRef.current?.contains(e.target as Node)) setMenuOpen(false)
+    }
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('keydown', close)
+    return () => {
+      document.removeEventListener('pointerdown', close)
+      document.removeEventListener('keydown', close)
+    }
+  }, [menuOpen])
 
   // El textarea crece con el texto, como si escribieras en la pizarra.
   useLayoutEffect(() => {
@@ -89,7 +124,7 @@ export function NoteItem({
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (editing || e.button !== 0) return
-    if ((e.target as HTMLElement).closest('button')) return
+    if ((e.target as HTMLElement).closest('button, .link-menu')) return
     const r = elRef.current!.getBoundingClientRect()
     drag.current = { offX: e.clientX - r.left, offY: e.clientY - r.top, sx: e.clientX, sy: e.clientY, moved: false }
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -158,6 +193,8 @@ export function NoteItem({
     live && 'dragging',
     erasing && 'erasing',
     editing && 'editing',
+    menuOpen && 'menu-open',
+    flash && 'flash',
   ]
     .filter(Boolean)
     .join(' ')
@@ -189,33 +226,111 @@ export function NoteItem({
         </svg>
       </button>
 
-      {editing ? (
-        <textarea
-          ref={textRef}
-          className="text"
-          value={draft}
-          placeholder="Escribe un objetivo…"
-          rows={1}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault()
-              commit()
-            } else if (e.key === 'Escape') {
-              cancel()
-            }
-          }}
-        />
-      ) : (
-        <div className="text">
-          <span className="strike">{note.text}</span>
-        </div>
+      <div className="body">
+        {editing ? (
+          <textarea
+            ref={textRef}
+            className="text"
+            value={draft}
+            placeholder="Escribe un objetivo…"
+            rows={1}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                commit()
+              } else if (e.key === 'Escape') {
+                cancel()
+              }
+            }}
+          />
+        ) : (
+          <div className="text">
+            <span className="strike">{note.text}</span>
+          </div>
+        )}
+
+        {parent && (
+          <button className="parent-tag" onClick={onOpenParent} title={`Ver en la pizarra de ${parentLabel}`}>
+            ↑ {parent.text}
+          </button>
+        )}
+
+        {childStats && (
+          <div className="steps" title={`${childStats.done} de ${childStats.total} pasos hechos`}>
+            <span className="steps-bar">
+              <span style={{ width: `${(childStats.done / childStats.total) * 100}%` }} />
+            </span>
+            {childStats.done}/{childStats.total} pasos
+          </div>
+        )}
+      </div>
+
+      {!!note.carried && (
+        <span className="carried" title={`Aplazado ${note.carried} ${note.carried === 1 ? 'vez' : 'veces'}`}>
+          ↻{note.carried}
+        </span>
       )}
 
-      <button className="remove" aria-label="Borrar" onClick={erase}>
-        ×
-      </button>
+      <div className="tools">
+        {linkCandidates && (
+          <button
+            className="tool"
+            aria-label={`Vincular a un objetivo de ${parentLabel}`}
+            title={`Vincular a un objetivo de ${parentLabel}`}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            ↑
+          </button>
+        )}
+        {onBreakDown && (
+          <button
+            className="tool"
+            aria-label={`Añadir un paso en ${childLabel}`}
+            title={`Añadir un paso en ${childLabel}`}
+            onClick={onBreakDown}
+          >
+            +
+          </button>
+        )}
+        <button className="tool" aria-label="Borrar" title="Borrar" onClick={erase}>
+          ×
+        </button>
+      </div>
+
+      {menuOpen && linkCandidates && (
+        <div className="link-menu" role="menu">
+          <p>Forma parte de… ({parentLabel})</p>
+          {linkCandidates.length === 0 && <p className="none">No hay objetivos en {parentLabel}.</p>}
+          {linkCandidates.map((c) => (
+            <button
+              key={c.id}
+              role="menuitemradio"
+              aria-checked={c.id === note.parentId}
+              onClick={() => {
+                onLink(c.id)
+                setMenuOpen(false)
+              }}
+            >
+              {c.text}
+            </button>
+          ))}
+          {note.parentId && (
+            <button
+              role="menuitem"
+              className="unlink"
+              onClick={() => {
+                onLink(undefined)
+                setMenuOpen(false)
+              }}
+            >
+              Quitar vínculo
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
