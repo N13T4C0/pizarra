@@ -1,0 +1,810 @@
+/* ───────────── Temas ─────────────
+   Cada tema define la pared, el marco, la superficie y las 4 "tintas".
+   Las notas guardan el índice de tinta, así cambian de color con el tema. */
+
+:root,
+:root[data-theme='blanca'] {
+  --wall: #e8e5df;
+  --wall-ink: #3b3a37;
+  --wall-muted: #7b7870;
+  --chip: #ffffffcc;
+  --chip-border: #d6d2ca;
+  --accent: #1d4ed8;
+
+  --frame: linear-gradient(180deg, #e3e6ea, #b8bdc4 45%, #d5d9de);
+  --frame-shadow: 0 1px 0 #fff inset, 0 18px 40px -18px #0006, 0 4px 10px -4px #0003;
+  --surface: #fbfcfa;
+  --surface-art:
+    radial-gradient(ellipse 40% 25% at 22% 30%, #e9ecef66, transparent 70%),
+    radial-gradient(ellipse 30% 20% at 75% 70%, #e4e8ec55, transparent 70%),
+    linear-gradient(160deg, #ffffff 0%, #f3f5f4 60%, #eef1f0 100%);
+  --tray: linear-gradient(180deg, #cfd3d8, #a9aeb6);
+
+  --ink-1: #1f2328;
+  --ink-2: #1d4ed8;
+  --ink-3: #c62828;
+  --ink-4: #17803d;
+  --ink-blur: 0px;
+  --ghost: #1f232818;
+  --card: transparent;
+}
+
+:root[data-theme='tiza'] {
+  --wall: #2a2724;
+  --wall-ink: #ece7dc;
+  --wall-muted: #a59f93;
+  --chip: #ffffff14;
+  --chip-border: #ffffff22;
+  --accent: #f7e27a;
+
+  --frame: linear-gradient(180deg, #9a6a3d, #6e4624 50%, #8a5a30);
+  --frame-shadow: 0 1px 0 #ffffff30 inset, 0 18px 40px -16px #000c;
+  --surface: #2f4a3a;
+  --surface-art:
+    radial-gradient(ellipse 45% 30% at 25% 35%, #ffffff0d, transparent 70%),
+    radial-gradient(ellipse 35% 25% at 70% 65%, #ffffff0a, transparent 70%),
+    repeating-radial-gradient(circle at 30% 40%, #ffffff05 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, #35533f, #2b4436);
+  --tray: linear-gradient(180deg, #8a5a30, #5e3a1c);
+
+  --ink-1: #f4f1e8;
+  --ink-2: #f7e27a;
+  --ink-3: #f4a6b8;
+  --ink-4: #9fd3f0;
+  --ink-blur: 0.4px;
+  --ghost: #ffffff22;
+  --card: transparent;
+}
+
+:root[data-theme='corcho'] {
+  --wall: #ebe4d8;
+  --wall-ink: #3d3227;
+  --wall-muted: #85766a;
+  --chip: #ffffffaa;
+  --chip-border: #d8cbb8;
+  --accent: #b4532a;
+
+  --frame: linear-gradient(180deg, #a87447, #7a4e2d 50%, #956139);
+  --frame-shadow: 0 1px 0 #ffffff40 inset, 0 18px 40px -18px #0007;
+  --surface: #c69c6d;
+  --surface-art:
+    radial-gradient(circle at 20% 30%, #a77a4c 0 1.2px, transparent 1.6px),
+    radial-gradient(circle at 70% 60%, #dcb889 0 1px, transparent 1.5px),
+    radial-gradient(circle at 45% 80%, #8f6438 0 1px, transparent 1.4px),
+    linear-gradient(160deg, #cfa677, #bb8f5f);
+  --surface-size: 9px 9px, 7px 7px, 11px 11px, auto;
+  --tray: linear-gradient(180deg, #956139, #6a4325);
+
+  --ink-1: #23201c;
+  --ink-2: #1e40af;
+  --ink-3: #b91c1c;
+  --ink-4: #166534;
+  --ink-blur: 0px;
+  --ghost: #00000020;
+  /* En corcho no se escribe a rotulador: lo "escrito" va en fichas de papel clavadas. */
+  --card: #fffdf6;
+}
+
+/* ───────────── Base ───────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--wall);
+  color: var(--wall-ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ───────────── Barra superior ───────────── */
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 16px clamp(16px, 4vw, 40px) 4px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Caveat', cursive;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.logo {
+  width: 28px;
+  height: 20px;
+  border-radius: 3px;
+  background: var(--surface);
+  border: 3px solid #9aa0a8;
+  box-shadow: 0 2px 4px #0003;
+}
+
+.tabs,
+.theme-picker {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid var(--chip-border);
+}
+
+.tabs {
+  margin-right: auto;
+}
+
+.tabs button,
+.theme-picker button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--wall-muted);
+  transition: background 0.2s, color 0.2s;
+}
+
+.tabs button[aria-pressed='true'],
+.theme-picker button[aria-checked='true'] {
+  background: var(--wall-ink);
+  color: var(--wall);
+}
+
+.badge {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+
+:root[data-theme='tiza'] .badge {
+  color: #2a2724;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid #0003;
+}
+
+.swatch-blanca {
+  background: #fbfcfa;
+}
+.swatch-tiza {
+  background: #2f4a3a;
+}
+.swatch-corcho {
+  background: #c69c6d;
+}
+
+/* ───────────── Pizarra ───────────── */
+
+.wall {
+  flex: 1;
+  padding: 16px clamp(16px, 4vw, 40px) 24px;
+}
+
+.frame {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--frame);
+  box-shadow: var(--frame-shadow);
+}
+
+.board {
+  background: var(--surface);
+  background-image: var(--surface-art);
+  background-size: var(--surface-size, auto);
+  border-radius: 4px;
+  box-shadow: inset 0 2px 8px #0002;
+  color: var(--ink-1);
+  font-family: 'Caveat', cursive;
+}
+
+.board-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 16px 24px 8px;
+  border-bottom: 2px dashed var(--ghost);
+}
+
+.eyebrow {
+  font-size: 20px;
+  color: var(--ink-3);
+}
+
+.period h1 {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1;
+  filter: blur(var(--ink-blur));
+}
+
+.period small {
+  font-size: 0.6em;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.board-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  font-size: 22px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress svg {
+  width: 90px;
+  height: 10px;
+  overflow: visible;
+}
+
+.progress path {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.progress .track {
+  stroke: var(--ghost);
+}
+
+.progress .fill {
+  stroke: var(--ink-4);
+  stroke-dasharray: 1 2;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.pager {
+  display: flex;
+  gap: 2px;
+}
+
+.pager button,
+.add {
+  border: 0;
+  background: transparent;
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  color: var(--ink-1);
+}
+
+.pager button:hover:not(:disabled),
+.add:hover {
+  background: var(--ghost);
+}
+
+.pager button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.add {
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.surface {
+  position: relative;
+  height: clamp(420px, 64vh, 720px);
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-size: 30px;
+  color: var(--ghost);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ───────────── Notas ───────────── */
+
+.note {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: min(320px, 40%);
+  min-width: 150px;
+  padding: 6px 28px 6px 6px;
+  transform: rotate(var(--rot));
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font-size: 28px;
+  line-height: 1.1;
+  border-radius: 4px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.3s,
+    filter 0.3s,
+    box-shadow 0.2s;
+  animation: appear 0.35s ease-out;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: rotate(var(--rot)) scale(0.92);
+  }
+}
+
+.note:hover,
+.note:focus-visible {
+  z-index: 1;
+}
+
+.note.dragging {
+  cursor: grabbing;
+  z-index: 10;
+  transition: opacity 0.3s;
+  transform: rotate(calc(var(--rot) * 2)) scale(1.04);
+}
+
+.note.editing {
+  cursor: text;
+  z-index: 5;
+}
+
+.note.erasing {
+  opacity: 0;
+  filter: blur(6px);
+  transform: rotate(var(--rot)) scale(0.85);
+}
+
+/* Rotulador: el texto va directamente sobre la pizarra */
+.note.marker {
+  color: var(--ink);
+  background: var(--card);
+}
+
+.note.marker .text {
+  filter: blur(var(--ink-blur));
+}
+
+.note.ink-1 {
+  --ink: var(--ink-1);
+}
+.note.ink-2 {
+  --ink: var(--ink-2);
+}
+.note.ink-3 {
+  --ink: var(--ink-3);
+}
+.note.ink-4 {
+  --ink: var(--ink-4);
+}
+
+:root[data-theme='corcho'] .note.marker {
+  padding: 14px 28px 10px 10px;
+  box-shadow: 0 3px 8px -2px #0005;
+}
+
+/* Post-it: papel de color, siempre con tinta oscura */
+.note.postit {
+  --ink: #2a2a2a;
+  color: var(--ink);
+  width: clamp(150px, 17vw, 200px);
+  min-height: 130px;
+  padding: 22px 28px 14px 12px;
+  border-radius: 2px 2px 14px 2px;
+  box-shadow:
+    0 1px 1px #0002,
+    0 10px 14px -8px #0006;
+}
+
+.postit-yellow {
+  background: linear-gradient(170deg, #fff1a8, #fde68a);
+}
+.postit-pink {
+  background: linear-gradient(170deg, #fde0ef, #fbcfe8);
+}
+.postit-blue {
+  background: linear-gradient(170deg, #dbeafe, #bfdbfe);
+}
+.postit-green {
+  background: linear-gradient(170deg, #dcfce7, #bbf7d0);
+}
+
+/* Imán (pizarra) o chincheta (corcho) arriba del post-it */
+.note.postit::before,
+:root[data-theme='corcho'] .note.marker::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8a80, #c62828 60%, #7f1d1d);
+  box-shadow: 0 3px 4px #0005;
+}
+
+:root[data-theme='tiza'] .note.postit::before {
+  background: radial-gradient(circle at 35% 30%, #bae6fd, #2563eb 60%, #1e3a8a);
+}
+
+.note .text {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.note textarea.text {
+  display: block;
+  resize: none;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  outline: none;
+  min-width: 180px;
+}
+
+.note textarea.text::placeholder {
+  color: currentColor;
+  opacity: 0.35;
+}
+
+/* Tachado: una raya por cada línea del texto que se "dibuja" al completar */
+.strike {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 60% / 0% 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  border-radius: 2px;
+  transition: background-size 0.45s cubic-bezier(0.6, 0, 0.3, 1);
+}
+
+.note.done .strike {
+  background-size: 100% 3px;
+}
+
+.note.done .text {
+  opacity: 0.6;
+}
+
+/* Casilla dibujada a mano */
+.check {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-top: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.check svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.check path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.check .box {
+  stroke-width: 1.8;
+  opacity: 0.75;
+}
+
+.check .tick {
+  stroke-width: 2.8;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition:
+    stroke-dashoffset 0.3s ease-out,
+    opacity 0s 0.3s;
+}
+
+.note.done .check .tick {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 0.3s ease-out;
+}
+
+.remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.note:hover .remove,
+.note:focus-within .remove {
+  opacity: 0.55;
+}
+
+.remove:hover {
+  opacity: 1 !important;
+  background: #0001;
+}
+
+.note.editing .remove {
+  display: none;
+}
+
+/* ───────────── Repisa ───────────── */
+
+.tray {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 12px -6px -6px;
+  padding: 8px 16px;
+  border-radius: 4px 4px 8px 8px;
+  background: var(--tray);
+  box-shadow: inset 0 2px 3px #0003, 0 1px 0 #ffffff40 inset;
+}
+
+.markers,
+.postits {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.marker-pen {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translateY(2px);
+  transition: transform 0.15s;
+}
+
+.marker-pen .cap {
+  width: 14px;
+  height: 16px;
+  border-radius: 6px 2px 2px 6px;
+  background: var(--ink);
+}
+
+.marker-pen .body {
+  width: 46px;
+  height: 14px;
+  border-radius: 2px 5px 5px 2px;
+  background: linear-gradient(180deg, #ffffff, #d8dadd);
+  border-left: 4px solid var(--ink);
+  box-shadow: 0 2px 3px #0004;
+}
+
+:root[data-theme='tiza'] .marker-pen .cap {
+  display: none;
+}
+
+:root[data-theme='tiza'] .marker-pen .body {
+  width: 38px;
+  height: 11px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--ink);
+}
+
+.marker-pen.ink-1 {
+  --ink: var(--ink-1);
+}
+.marker-pen.ink-2 {
+  --ink: var(--ink-2);
+}
+.marker-pen.ink-3 {
+  --ink: var(--ink-3);
+}
+.marker-pen.ink-4 {
+  --ink: var(--ink-4);
+}
+
+.marker-pen:hover,
+.postit-pad:hover {
+  transform: translateY(-2px);
+}
+
+.marker-pen[aria-pressed='true'] {
+  transform: translateY(-6px) rotate(-6deg);
+}
+
+.postit-pad {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  box-shadow:
+    0 2px 0 -1px #fff8,
+    0 4px 0 -2px #0001,
+    0 3px 5px #0004;
+  transition: transform 0.15s;
+}
+
+.postit-pad[aria-pressed='true'] {
+  transform: translateY(-6px);
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+
+.eraser {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  text-shadow: 0 1px 1px #0006;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.eraser .felt {
+  width: 56px;
+  height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4b5563 0 55%, #e5e7eb 55%);
+  box-shadow: 0 2px 4px #0005;
+}
+
+.eraser.dragging {
+  background: #ffffff30;
+  outline: 2px dashed #fff;
+}
+
+.eraser.over-eraser {
+  background: #dc262699;
+  transform: scale(1.08);
+}
+
+.hint {
+  max-width: 1280px;
+  margin: 12px auto 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--wall-muted);
+}
+
+/* ───────────── Móvil ───────────── */
+
+@media (max-width: 640px) {
+  .tabs {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tabs button {
+    flex: 1;
+    justify-content: center;
+    padding: 6px 8px;
+  }
+
+  .theme-picker button {
+    padding: 6px 10px;
+  }
+
+  .frame {
+    padding: 8px;
+  }
+
+  .board-head {
+    padding: 12px 14px 6px;
+  }
+
+  .note {
+    font-size: 23px;
+    min-width: 120px;
+    max-width: 70%;
+  }
+
+  .note.postit {
+    width: 140px;
+    min-height: 110px;
+  }
+
+  .tray {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .marker-pen .body {
+    width: 30px;
+  }
+
+  .hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
