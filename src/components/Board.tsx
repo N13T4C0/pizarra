@@ -1,8 +1,9 @@
 import { useRef } from 'react'
-import type { Horizon, Note } from '../lib/types'
-import { HORIZONS, periodLabel } from '../lib/periods'
+import type { Habit, Horizon, Note } from '../lib/types'
+import { HORIZONS, periodKey, periodLabel } from '../lib/periods'
 import { NoteItem, type DragState } from './NoteItem'
 import { CarryOver } from './CarryOver'
+import { HabitStrip } from './HabitStrip'
 import { Icon } from './Icon'
 
 interface Props {
@@ -34,6 +35,10 @@ interface Props {
   onLink: (id: string, parentId: string | undefined) => void
   onBreakDown?: (n: Note) => void
   onOpenParent: (parent: Note) => void
+  /** Solo en la pizarra diaria: los hábitos para marcar ese día. */
+  habits?: Habit[]
+  onToggleHabit?: (id: string, day: string) => void
+  onOpenHabits?: () => void
 }
 
 export function Board(props: Props) {
@@ -91,6 +96,16 @@ export function Board(props: Props) {
       </header>
 
       <CarryOver horizon={horizon} pending={props.pastPending} onCarry={props.onCarry} onDismiss={props.onDismiss} />
+
+      {horizon === 'day' && props.habits && props.onToggleHabit && props.onOpenHabits && (
+        <HabitStrip
+          habits={props.habits}
+          day={periodKey('day', viewDate)}
+          isFuture={periodKey('day', viewDate) > periodKey('day', new Date())}
+          onToggle={props.onToggleHabit}
+          onOpenHabits={props.onOpenHabits}
+        />
+      )}
 
       <div ref={surfaceRef} className="surface" onDoubleClick={onDoubleClick}>
         {notes.length === 0 && (

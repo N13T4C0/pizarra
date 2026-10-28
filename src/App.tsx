@@ -306,6 +306,9 @@ export default function App() {
               onLink={(id, parentId) => updateNote(id, { parentId })}
               onBreakDown={childHorizon ? breakDown : undefined}
               onOpenParent={openParent}
+              habits={habits}
+              onToggleHabit={toggleHabit}
+              onOpenHabits={() => switchView('habits')}
             />
           )}
           <Tray ref={eraserRef} tool={tool} dragState={dragState} onTool={setTool} />
